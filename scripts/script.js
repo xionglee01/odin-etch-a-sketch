@@ -1,37 +1,36 @@
 const container = document.querySelector(".container");
+const slider = document.getElementById("gridRange");
+const output = document.querySelector(".out");
+const colorpicker = document.getElementById("colorpicker");
 
-let row = 16;
-let column = 16;
 
-let test = getComputedStyle(container);
-let num = parseFloat(test.width);
+let row = slider.value;
+let col = slider.value;
+let containerWidth = parseFloat(getComputedStyle(container).width);
+
+output.innerText = `${row} x ${col}`;
 
 function createGrid()
 {
     for(let i = 0; i < row; i++)
     {
         let row_grid = document.createElement("div");
-        for(let j = 0; j < column; j++)
+        for(let j = 0; j < col; j++)
         {
             let column_grid = document.createElement("div");
             column_grid.setAttribute("class","box");
-            column_grid.style.width = `${num/row}px`;
-            column_grid.style.height = `${num/column}px`;
-            console.log(column_grid.style.width)
+            column_grid.style.width = `${containerWidth/row}px`;
+            column_grid.style.height = `${containerWidth/col}px`;
+            // console.log(column_grid.style.width)
             row_grid.appendChild(column_grid);
             
         }
         container.appendChild(row_grid);
     }
 }
-
-
-createGrid();
+window.onload = createGrid();
 
 const grid = document.querySelectorAll(".box");
-
-
-console.log(test.width);
 
 function deleteGrid()
 {
@@ -39,15 +38,15 @@ function deleteGrid()
     {
         container.removeChild(container.lastChild);
     }
+    createGrid();
 }
 
 function changeGrid()
 {
-    let new_gridsize = prompt("Enter a number for grid size (MAX 100): ", 16);
-    row = new_gridsize;
-    column = new_gridsize;
-    deleteGrid();
-    createGrid();
+    row = this.value;
+    col = this.value;
+    output.innerText = `${row} x ${col}`;
+    deleteGrid(); 
 }
 
 
@@ -55,7 +54,7 @@ function changeColor(e)
 {
     if(e.target.className === 'box')
     {
-        e.target.style.backgroundColor = "black";
+        e.target.style.backgroundColor = colorpicker.value;
     }
 }
 
@@ -65,11 +64,11 @@ function changeColorHold(e)
     {
         if(e.target.className === 'box')
         {
-            e.target.style.backgroundColor = "black";
+            e.target.style.backgroundColor = colorpicker.value;
         }
     }
 }
 
-
+slider.oninput = changeGrid;
 grid.forEach(box => addEventListener('mousedown', changeColor));
 grid.forEach(box => addEventListener('mouseover', changeColorHold));
